@@ -77,9 +77,11 @@ ts3_2 = t3[-dp2,]
 confusionMatrix(predict(rfModel, ts3_2), ts3_2$classe)
 ```
 
+When we double our sample to 20%, we get 97% accuracy but the processing time is much more than double.
+
 ```{r}
 set.seed(32123)
-dp3 = createDataPartition(y=t3$classe, p=0.1, list=FALSE)
+dp3 = createDataPartition(y=t3$classe, p=0.2, list=FALSE)
 t3_3 = t3[dp3,]
 rfModel = randomForest(classe~., data=t3_3, importance=TRUE, proximity=TRUE)
 ts3_3 = t3[-dp3,]

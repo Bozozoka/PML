@@ -183,8 +183,9 @@ confusionMatrix(predict(rfModel, ts3_2), ts3_2$classe)</code></pre>
 ## Detection Rate         0.2815   0.1790   0.1634   0.1506   0.1782
 ## Detection Prevalence   0.2945   0.1895   0.1808   0.1557   0.1794
 ## Balanced Accuracy      0.9858   0.9558   0.9579   0.9564   0.9838</code></pre>
+<p>When we double our sample to 20%, we get 97% accuracy but the processing time is much more than double.</p>
 <pre class="r"><code>set.seed(32123)
-dp3 = createDataPartition(y=t3$classe, p=0.1, list=FALSE)
+dp3 = createDataPartition(y=t3$classe, p=0.2, list=FALSE)
 t3_3 = t3[dp3,]
 rfModel = randomForest(classe~., data=t3_3, importance=TRUE, proximity=TRUE)
 ts3_3 = t3[-dp3,]
@@ -193,33 +194,33 @@ confusionMatrix(predict(rfModel, ts3_3), ts3_3$classe)</code></pre>
 ## 
 ##           Reference
 ## Prediction    A    B    C    D    E
-##          A 4947   96    1   27    5
-##          B   15 3168   83    5   32
-##          C   35  139 2918  123   61
-##          D   21   14   77 2709   22
-##          E    4    0    0   30 3126
+##          A 4441   73    1    7    0
+##          B   11 2906   81    0    7
+##          C    9   57 2615  132    5
+##          D    2    1   39 2424   17
+##          E    1    0    1    9 2856
 ## 
 ## Overall Statistics
 ##                                           
-##                Accuracy : 0.9553          
-##                  95% CI : (0.9521, 0.9583)
+##                Accuracy : 0.9711          
+##                  95% CI : (0.9684, 0.9737)
 ##     No Information Rate : 0.2844          
 ##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
 ##                                           
-##                   Kappa : 0.9434          
+##                   Kappa : 0.9635          
 ##  Mcnemar's Test P-Value : &lt; 2.2e-16       
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            0.9851   0.9271   0.9477   0.9361   0.9630
-## Specificity            0.9898   0.9905   0.9754   0.9909   0.9976
-## Pos Pred Value         0.9746   0.9591   0.8907   0.9529   0.9892
-## Neg Pred Value         0.9940   0.9827   0.9888   0.9875   0.9917
+## Sensitivity            0.9948   0.9569   0.9554   0.9425   0.9899
+## Specificity            0.9928   0.9922   0.9843   0.9955   0.9991
+## Pos Pred Value         0.9821   0.9671   0.9280   0.9762   0.9962
+## Neg Pred Value         0.9979   0.9897   0.9905   0.9888   0.9977
 ## Prevalence             0.2844   0.1935   0.1744   0.1639   0.1838
-## Detection Rate         0.2802   0.1794   0.1653   0.1534   0.1770
-## Detection Prevalence   0.2875   0.1871   0.1855   0.1610   0.1790
-## Balanced Accuracy      0.9874   0.9588   0.9616   0.9635   0.9803</code></pre>
+## Detection Rate         0.2830   0.1852   0.1666   0.1544   0.1820
+## Detection Prevalence   0.2881   0.1915   0.1795   0.1582   0.1827
+## Balanced Accuracy      0.9938   0.9745   0.9699   0.9690   0.9945</code></pre>
 </div>
 
 
