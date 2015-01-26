@@ -1,0 +1,91 @@
+---
+title: "PML Prediction Assignment"
+output: html_document
+---
+
+## Pre-processing
+
+```{r, echo=FALSE}
+library(caret)
+library(randomForest)
+```
+
+
+We first load the data from the csv files into R.
+
+```{r}
+training = read.csv("/pml/pml-training.csv", head=TRUE)
+```
+
+The prediction variable is a category of 5 possible values.
+```{r}
+summary(training$classe)
+```
+
+The data contains a large number of invalid values like "#DIV/0!" and NA. We set "#DIV/0!" to NA and remove all columns with NA values. The number of factors is now 60 from 160 we started with.
+
+```{r}
+t1 = training;
+t1[t1 == "#DIV/0!"] = NA
+t2 = t1[, colSums(is.na(t1)) == 0 ]
+names(t2)
+```
+
+Note that there is an **X** variable which counts the index and our category of classe is sorted. Additionally, as seen in the graph below, users move from classe A to E with time and so timestamps and related variables should be removed from the training.
+
+```{r}
+t3 = t2[,-c(1:7)]
+qplot( cvtd_timestamp, user_name, color=classe, data=t2)
+```
+
+## Training
+
+Our problem is of classification we will use random forests classification algorithm. However, we have ~20,000 observations which is too large for the computer to handle. So, we work with only a fraction of the observations. 
+
+We randomly sample 10% observations and then build a random forest from it. 
+
+```{r}
+set.seed(12345)
+dp1 = createDataPartition(y=t3$classe, p=0.1, list=FALSE)
+t3_1 = t3[dp1,]
+rfModel = randomForest(classe~., data=t3_1, importance=TRUE, proximity=TRUE)
+```
+
+The most important factors are *roll_belt* and *magnet_dumbbell_z* and from the plot below, we can see that there is some separation of the classes from the factors.
+
+```{r}
+qplot(roll_belt, magnet_dumbbell_z, color=classe, data=t3)
+```
+
+## Predicting Out of Sample Errors
+
+Since we only used 10% of the data for our model training, we can use the rest of the 90% to do our testing.
+
+```{r}
+ts3_1 = t3[-dp1,]
+confusionMatrix(predict(rfModel, ts3_1), ts3_1$classe)
+```
+
+We get 95% accuracy with our results. We can choose another seed and again find the out of the sample error and all of them come around 95% accuracy.
+
+```{r}
+set.seed(54321)
+dp2 = createDataPartition(y=t3$classe, p=0.1, list=FALSE)
+t3_2 = t3[dp2,]
+rfModel = randomForest(classe~., data=t3_2, importance=TRUE, proximity=TRUE)
+ts3_2 = t3[-dp2,]
+confusionMatrix(predict(rfModel, ts3_2), ts3_2$classe)
+```
+
+```{r}
+set.seed(32123)
+dp3 = createDataPartition(y=t3$classe, p=0.1, list=FALSE)
+t3_3 = t3[dp3,]
+rfModel = randomForest(classe~., data=t3_3, importance=TRUE, proximity=TRUE)
+ts3_3 = t3[-dp3,]
+confusionMatrix(predict(rfModel, ts3_3), ts3_3$classe)
+```
+
+
+
+
